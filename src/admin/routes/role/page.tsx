@@ -67,6 +67,22 @@ const SetPermission = () => {
     error: updateroleError,
   } = useAdminCustomPost(`roles/${id}/user`, ["setRolestouser"]);
 
+  // Hook# 7 for removing the permission from a role
+
+  const {
+    mutate: removePermission,
+    isLoading: removePermissionloading,
+    error: removePermissionerror,
+  } = useAdminCustomPost(`roles/remove-permissions`, ["removePermissions"]);
+
+  // Hook# 8 for removing the users from role
+
+  const {
+    mutate: removeRoleUsers,
+    isLoading: removeRoleUsersloading,
+    error: removeRoleUserserror,
+  } = useAdminCustomPost(`roles/remove-users`, ["removeUsers"]);
+
   // Hook 1
   if (permissionsLoading) {
     return <div>Loading...</div>;
@@ -106,6 +122,23 @@ const SetPermission = () => {
 
   if (updateroleError) {
     return <div>Error: {updateroleError.message}</div>;
+  }
+  // hook 7
+  if (removePermissionloading) {
+    return <div>Loading...</div>;
+  }
+
+  if (removePermissionerror) {
+    return <div>Error: {removePermissionerror.message}</div>;
+  }
+  // hook 8
+
+  if (removeRoleUsersloading) {
+    return <div>Loading...</div>;
+  }
+
+  if (removeRoleUserserror) {
+    return <div>Error: {removeRoleUserserror.message}</div>;
   }
 
   const permissions = roleData.role.permissions;
@@ -203,6 +236,26 @@ const SetPermission = () => {
     setDrawerOpen(false);
   };
 
+  // Handle remove permission from a role
+
+  const handleRemovePermission = (permission_id) => {
+    const ids = {
+      role_id: id,
+      permission_id,
+    };
+    removePermission(ids);
+  };
+
+  // Handle remove users from a role
+
+  const handleRemoveUsers = (user_id) => {
+    const ids = {
+      user_id,
+      id,
+    };
+    removeRoleUsers(ids);
+  };
+
   const handleNameChange = (e) => {
     const { value } = e.target;
     setNewPermission({
@@ -210,7 +263,7 @@ const SetPermission = () => {
       name: value,
     });
     if (nameError) {
-      setNameError('');
+      setNameError("");
     }
   };
 
@@ -221,7 +274,7 @@ const SetPermission = () => {
       metadata: value,
     });
     if (metadataError) {
-      setMetadataError('');
+      setMetadataError("");
     }
   };
 
@@ -401,6 +454,7 @@ const SetPermission = () => {
                   <Table.HeaderCell>#</Table.HeaderCell>
                   <Table.HeaderCell>Name</Table.HeaderCell>
                   <Table.HeaderCell>Route</Table.HeaderCell>
+                  <Table.HeaderCell></Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
@@ -412,6 +466,16 @@ const SetPermission = () => {
                     <Table.Cell>
                       {JSON.stringify(permission.metadata)}
                     </Table.Cell>
+                    <Table.HeaderCell>
+                      <Button
+                        variant="secondary"
+                        onClick={() => {
+                          handleRemovePermission(permission.id);
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </Table.HeaderCell>
                   </Table.Row>
                 ))}
               </Table.Body>
@@ -459,7 +523,6 @@ const SetPermission = () => {
                           <Table.HeaderCell>First Name</Table.HeaderCell>
                           <Table.HeaderCell>Last Name</Table.HeaderCell>
                           <Table.HeaderCell>Email</Table.HeaderCell>
-                        
                         </Table.Row>
                       </Table.Header>
                       <Table.Body>
@@ -491,7 +554,6 @@ const SetPermission = () => {
                             <Table.Cell>{user.first_name}</Table.Cell>
                             <Table.Cell>{user.last_name}</Table.Cell>
                             <Table.Cell>{user.email}</Table.Cell>
-                           
                           </Table.Row>
                         ))}
                       </Table.Body>
@@ -526,7 +588,7 @@ const SetPermission = () => {
                   <Table.HeaderCell>First Name</Table.HeaderCell>
                   <Table.HeaderCell>Last Name</Table.HeaderCell>
                   <Table.HeaderCell>Email</Table.HeaderCell>
-                
+                  <Table.HeaderCell></Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
@@ -536,7 +598,16 @@ const SetPermission = () => {
                     <Table.Cell>{user.first_name}</Table.Cell>
                     <Table.Cell>{user.last_name}</Table.Cell>
                     <Table.Cell>{user.email}</Table.Cell>
-                   
+                    <Table.Cell>
+                      <Button
+                        variant="secondary"
+                        onClick={() => {
+                          handleRemoveUsers(user.id);
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>

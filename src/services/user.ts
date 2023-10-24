@@ -15,6 +15,30 @@ class UserService extends MedusaUserService {
     const userRepo = this.activeManager_.getRepository(User);
     return await userRepo.find();
   }
+
+  async removeUsersfromRole(user_id, role_idToRemove) {
+    const userRepo = this.activeManager_.getRepository(User);
+    const user = await userRepo.findOne({
+      where: {
+        id: user_id,
+      },
+    });
+  
+    if (!user) {
+      return false;
+    }
+  
+    if (user.role_id === role_idToRemove) {
+      user.role_id = null; 
+  
+      await userRepo.save(user);
+  
+      return true;
+    }
+  
+    return false; 
+  }
+  
 }
 
 export default UserService;

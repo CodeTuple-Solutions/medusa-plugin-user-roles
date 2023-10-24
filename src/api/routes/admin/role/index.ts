@@ -9,7 +9,8 @@ import updateRolePermissions from "./updateRolePermissions";
 import createPermission from "./createPermission";
 import list from "./getAllUsers";
 import DeleteRole from "./delete-role"
-
+import removePermission from "./removepermission";
+import removeUsersfromRole from "./remove-user";
 const router = Router();
 
 export default (adminRouter: Router) => {
@@ -24,4 +25,6 @@ export default (adminRouter: Router) => {
   router.post("/createnewpermission", wrapHandler(createPermission));
   router.get("/getAllUsers", wrapHandler(list));
   router.post("/delete-role",wrapHandler(DeleteRole));
+  router.post("/remove-permissions",wrapHandler(removePermission));
+  router.post("/remove-users",wrapHandler(removeUsersfromRole));
 };

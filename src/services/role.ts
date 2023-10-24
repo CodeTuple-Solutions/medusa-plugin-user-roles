@@ -38,12 +38,12 @@ class RoleService extends TransactionBaseService {
   async DeleteRole(id) {
     // Extract the value from the id object
     const roleId = id.value;
-    
+
     const roleRepo = this.manager_.withRepository(this.roleRpository_);
     const role = await roleRepo.findOne({
       where: { id: roleId },
     });
-  
+
     if (role) {
       await roleRepo.remove(role);
     } else {
@@ -51,7 +51,6 @@ class RoleService extends TransactionBaseService {
       throw new Error("Role not found");
     }
   }
-  
 
   async retrieve1(id: string): Promise<Role> {
     // for simplicity, we retrieve all relations
@@ -120,6 +119,32 @@ class RoleService extends TransactionBaseService {
       return await this.retrieve1(role_id);
     });
   }
+
+  async removePermission(role_id, permission_id) {
+    const roleRepo = this.manager_.withRepository(this.roleRpository_);
+
+    const role = await this.retrieve1(role_id);
+
+    if (!role) {
+      return false;
+    }
+
+    const permissionIndex = role.permissions.findIndex(
+      (p) => p.id === permission_id
+    );
+
+    if (permissionIndex === -1) {
+      return false;
+    }
+
+    role.permissions.splice(permissionIndex, 1);
+
+    await roleRepo.save(role);
+
+    return true;
+  }
+
+  
 }
 
 export default RoleService;
